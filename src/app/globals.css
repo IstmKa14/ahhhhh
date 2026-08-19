@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 20% 98%; /* #FBFCFE - Near-white */
+    --foreground: 224 71.4% 4.1%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 224 71.4% 4.1%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71.4% 4.1%;
+
+    /* #9FD8FF - Pastel Blue */
+    --primary: 205 100% 81%;
+    --primary-foreground: 210 40% 9.8%;
+
+    /* Lighter blue for secondary elements */
+    --secondary: 205 100% 95%;
+    --secondary-foreground: 205 100% 30%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    /* #C9B6FF - Lavender */
+    --accent: 255 100% 86%;
+    --accent-foreground: 255 40% 15%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 205 100% 81%;
+    
+    --radius: 0.5rem;
+    
+    /* Charts */
+    --chart-1: 205 100% 81%; /* primary */
+    --chart-2: 255 100% 86%; /* accent */
+    --chart-3: 45 90% 70%;  /* Soft Yellow */
+    --chart-4: 160 80% 75%; /* Soft Teal */
+    --chart-5: 340 90% 80%; /* Soft Pink */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground transition-colors duration-300;
+  }
+}
+
+@layer utilities {
+  .animate-pulse-slow {
+    animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  .petal {
+    position: absolute;
+    background-color: hsl(var(--primary) / 0.25);
+    border-radius: 150px 0;
+    animation: fall linear infinite;
+    filter: blur(0.5px);
+  }
+
+  @keyframes fall {
+    0% {
+      transform: translateY(-10vh) rotate(0deg) scale(0.9);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(110vh) rotate(360deg) scale(1.1);
+      opacity: 0;
+    }
+  }
+}
