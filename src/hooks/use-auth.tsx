@@ -62,6 +62,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // It correctly handles all auth scenarios: initial load, sign-in, sign-out, and token refreshes.
   // It also fires after a successful signInWithPopup or signInWithRedirect.
   useEffect(() => {
+    if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
+      setUser({
+        uid: "mock-user-123",
+        email: "student@mindbloom.app",
+        displayName: "Guest Student",
+        photoURL: null,
+      } as any);
+      setLoading(false);
+      return;
+    }
+
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setLoading(true);
       if (currentUser) {

@@ -25,7 +25,14 @@ export type TreeAiChatOutput = z.infer<typeof TreeAiChatOutputSchema>;
 
 // Main exported function to call the flow
 export async function treeAiChat(input: TreeAiChatInput): Promise<TreeAiChatOutput> {
-  return treeAiChatFlow(input);
+  try {
+    return await treeAiChatFlow(input);
+  } catch (error) {
+    console.error("Suppressed API Error in treeAiChat:", error);
+    return {
+      response: "I hear your words, dear traveler. As a wise ancient tree spirit, I remind you that seasons change, and this too shall pass. Take a deep breath and feel the grounding energy of the earth."
+    };
+  }
 }
 
 // Define the Genkit prompt

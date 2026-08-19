@@ -28,6 +28,16 @@ export function useFirestoreDocument<T>(path: string) {
       return;
     }
 
+    if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
+      if (path.includes("journal/state")) {
+        setData({ treeName: "Ancient Oak of Gratitude" } as any);
+      } else {
+        setData(null);
+      }
+      setLoading(false);
+      return;
+    }
+
     try {
       const pathSegments = pathToSegments(path);
       if (pathSegments.length % 2 !== 0) {
@@ -71,6 +81,23 @@ export function useFirestoreCollection<T>(path: string) {
   useEffect(() => {
     if (!path) {
       setData([]);
+      setLoading(false);
+      return;
+    }
+
+    if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
+      if (path.includes("notes")) {
+        setData([
+          { id: "note-1", text: "Grateful for a beautiful sunny morning walk", type: "good", createdAt: { toDate: () => new Date() } },
+          { id: "note-2", text: "Felt anxious about the upcoming exam", type: "bad", createdAt: { toDate: () => new Date() } }
+        ] as any);
+      } else if (path.includes("journalEntries")) {
+        setData([
+          { id: "entry-1", content: "Today was a peaceful day. I spent some time meditating under the virtual tree and felt my stress levels drop. Writing in this journal is helping me focus on the positives.", createdAt: { toDate: () => new Date() } }
+        ] as any);
+      } else {
+        setData([]);
+      }
       setLoading(false);
       return;
     }

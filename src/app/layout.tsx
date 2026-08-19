@@ -1,6 +1,6 @@
 
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Cormorant_Garamond, Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
@@ -9,20 +9,29 @@ import { Footer } from '@/components/layout/Footer';
 import { AuthProvider } from '@/hooks/use-auth';
 import { headers } from 'next/headers';
 
+const cormorant = Cormorant_Garamond({
+  subsets: ['latin'],
+  variable: '--font-cormorant',
+  weight: ['300', '400', '500', '600', '700'],
+});
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  variable: '--font-jakarta',
+});
 
 export const metadata: Metadata = {
   title: 'MindBloom',
   description: 'Your sanctuary for mental wellness and personal growth.',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const pathname = headers().get('next-url') || '';
+  const headerList = await headers();
+  const pathname = headerList.get('next-url') || '';
   const isChatPage = pathname.startsWith('/chat');
 
   return (
@@ -32,7 +41,8 @@ export default function RootLayout({
       </head>
       <body className={cn(
           'font-body antialiased', 
-          inter.variable,
+          cormorant.variable,
+          jakarta.variable,
           isChatPage && 'is-chat-page'
         )}>
           <AuthProvider>

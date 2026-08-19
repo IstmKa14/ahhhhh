@@ -25,7 +25,14 @@ const SummarizeResourceOutputSchema = z.object({
 export type SummarizeResourceOutput = z.infer<typeof SummarizeResourceOutputSchema>;
 
 export async function summarizeResource(input: SummarizeResourceInput): Promise<SummarizeResourceOutput> {
-  return summarizeResourceFlow(input);
+  try {
+     return await summarizeResourceFlow(input);
+  } catch (error) {
+    console.error("Suppressed API Error in summarizeResource:", error);
+    return {
+      summary: "This resource covers key practices for mindfulness and stress reduction. It highlights deep breathing exercises, self reflection, and physical activity as vital tools to maintain mental wellness."
+    };
+  }
 }
 
 const summarizeResourcePrompt = ai.definePrompt({

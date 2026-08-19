@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type JSX } from 'react';
 
 // This component is client-side only to avoid hydration errors with random values
 export function FloatingPetals() {

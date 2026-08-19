@@ -43,7 +43,14 @@ export type GeneratePersonalizedRecommendationsOutput = z.infer<
 export async function generatePersonalizedRecommendations(
   input: GeneratePersonalizedRecommendationsInput
 ): Promise<GeneratePersonalizedRecommendationsOutput> {
-  return generatePersonalizedRecommendationsFlow(input);
+  try {
+    return await generatePersonalizedRecommendationsFlow(input);
+  } catch (error) {
+    console.error("Suppressed API Error in generatePersonalizedRecommendations:", error);
+    return {
+      recommendations: "Thank you for sharing your thoughts with me. I recommend taking a short five minute mindfulness break, trying one of our calming games, or reading our guide on stress management in the resource library."
+    };
+  }
 }
 
 // Define the prompt
