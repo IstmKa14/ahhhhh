@@ -1,5 +1,4 @@
-
-import { z } from 'genkit';
+import { z } from 'zod';
 
 export const YoutubeSearchInputSchema = z.object({
   query: z.string().describe('The search query for YouTube videos.'),

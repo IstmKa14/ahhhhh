@@ -1,16 +1,12 @@
-
 'use server';
 
 /**
- * @fileOverview This file defines a Genkit flow for summarizing resources.
- *
- * - summarizeResource - A function that takes resource content as input and returns a summary.
- * - SummarizeResourceInput - The input type for the summarizeResource function.
- * - SummarizeResourceOutput - The return type for the summarizeResource function.
+ * @fileOverview This file defines a LangChain flow for summarizing resources.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { z } from 'zod';
+import { getLLM, isMockMode } from '@/ai/llm';
+import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 
 const SummarizeResourceInputSchema = z.object({
   resourceContent: z
@@ -26,7 +22,24 @@ export type SummarizeResourceOutput = z.infer<typeof SummarizeResourceOutputSche
 
 export async function summarizeResource(input: SummarizeResourceInput): Promise<SummarizeResourceOutput> {
   try {
-     return await summarizeResourceFlow(input);
+    if (isMockMode) {
+      return {
+        summary: "This resource covers key practices for mindfulness and stress reduction. It highlights deep breathing exercises, self reflection, and physical activity as vital tools to maintain mental wellness."
+      };
+    }
+
+    const llm = getLLM(0.3);
+    if (!llm) {
+      throw new Error("LLM client could not be initialized");
+    }
+
+    const structuredLlm = llm.withStructuredOutput(SummarizeResourceOutputSchema);
+    const result = await structuredLlm.invoke([
+      new SystemMessage("Summarize the following resource content in a concise paragraph:"),
+      new HumanMessage(input.resourceContent),
+    ]);
+
+    return result;
   } catch (error) {
     console.error("Suppressed API Error in summarizeResource:", error);
     return {
@@ -34,25 +47,3 @@ export async function summarizeResource(input: SummarizeResourceInput): Promise<
     };
   }
 }
-
-const summarizeResourcePrompt = ai.definePrompt({
-  name: 'summarizeResourcePrompt',
-  input: {schema: SummarizeResourceInputSchema},
-  output: {schema: SummarizeResourceOutputSchema},
-  model: 'googleai/gemini-1.5-flash-latest',
-  prompt: `Summarize the following resource content in a concise paragraph:
-
-{{{resourceContent}}}`,
-});
-
-const summarizeResourceFlow = ai.defineFlow(
-  {
-    name: 'summarizeResourceFlow',
-    inputSchema: SummarizeResourceInputSchema,
-    outputSchema: SummarizeResourceOutputSchema,
-  },
-  async input => {
-    const {output} = await summarizeResourcePrompt(input);
-    return output!;
-  }
-);

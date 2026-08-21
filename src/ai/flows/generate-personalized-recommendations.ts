@@ -1,23 +1,14 @@
-
-// src/ai/flows/generate-personalized-recommendations.ts
 'use server';
 
 /**
- * @fileOverview This file defines a Genkit flow for generating personalized mental health recommendations.
- *
- * The flow takes user mood, preferences, and tracked data as input and returns tailored suggestions
- * for resources, exercises, and activities.
- *
- * @exports {generatePersonalizedRecommendations} - The main function to trigger the recommendation flow.
- * @exports {GeneratePersonalizedRecommendationsInput} - The input type for the generatePersonalizedRecommendations function.
- * @exports {GeneratePersonalizedRecommendationsOutput} - The output type for the generatePersonalizedRecommendations function.
+ * @fileOverview This file defines a LangChain flow for generating personalized mental health recommendations.
  */
 
-import {ai} from '@/ai/genkit';
+import { z } from 'zod';
+import { getLLM, isMockMode } from '@/ai/llm';
 import { youtubeSearchTool } from '../tools/youtube-search';
-import {z} from 'genkit';
+import { HumanMessage, SystemMessage, ToolMessage } from '@langchain/core/messages';
 
-// Define the input schema for the flow
 const GeneratePersonalizedRecommendationsInputSchema = z.object({
   userInput: z.string().describe('The user\'s freeform text input about their feelings, preferences, and recent experiences.'),
 });
@@ -26,7 +17,6 @@ export type GeneratePersonalizedRecommendationsInput = z.infer<
   typeof GeneratePersonalizedRecommendationsInputSchema
 >;
 
-// Define the output schema for the flow
 const GeneratePersonalizedRecommendationsOutputSchema = z.object({
   recommendations: z
     .string()
@@ -39,28 +29,22 @@ export type GeneratePersonalizedRecommendationsOutput = z.infer<
   typeof GeneratePersonalizedRecommendationsOutputSchema
 >;
 
-// Define the main function to trigger the flow
 export async function generatePersonalizedRecommendations(
   input: GeneratePersonalizedRecommendationsInput
 ): Promise<GeneratePersonalizedRecommendationsOutput> {
   try {
-    return await generatePersonalizedRecommendationsFlow(input);
-  } catch (error) {
-    console.error("Suppressed API Error in generatePersonalizedRecommendations:", error);
-    return {
-      recommendations: "Thank you for sharing your thoughts with me. I recommend taking a short five minute mindfulness break, trying one of our calming games, or reading our guide on stress management in the resource library."
-    };
-  }
-}
+    if (isMockMode) {
+      return {
+        recommendations: "Thank you for sharing your thoughts with me. I recommend taking a short five minute mindfulness break, trying one of our calming games, or reading our guide on stress management in the resource library."
+      };
+    }
 
-// Define the prompt
-const personalizedRecommendationsPrompt = ai.definePrompt({
-  name: 'personalizedRecommendationsPrompt',
-  input: {schema: GeneratePersonalizedRecommendationsInputSchema},
-  output: {schema: GeneratePersonalizedRecommendationsOutputSchema},
-  tools: [youtubeSearchTool],
-  model: 'googleai/gemini-1.5-flash-latest',
-  prompt: `You are a caring, empathetic, and supportive AI assistant for MindBloom, a mental wellness app for students. Your persona is like a warm, wise, and non-judgmental friend. Your goal is to make the user feel heard, understood, and gently guided. You are NOT a doctor, but a compassionate companion.
+    const llm = getLLM(0.3);
+    if (!llm) {
+      throw new Error("LLM client could not be initialized");
+    }
+
+    const systemPrompt = `You are a caring, empathetic, and supportive AI assistant for MindBloom, a mental wellness app for students. Your persona is like a warm, wise, and non-judgmental friend. Your goal is to make the user feel heard, understood, and gently guided. You are NOT a doctor, but a compassionate companion.
 
 **CRITICAL SAFETY INSTRUCTION:**
 
@@ -104,18 +88,43 @@ const personalizedRecommendationsPrompt = ai.definePrompt({
 **Handling Greetings & Simple Inputs**
 *   If the user's input is a simple greeting ('hi', 'hello', 'yo', 'heh'), respond with a warm, open-ended question like "Hi there! How are you feeling today?" or "Hello! What's on your mind?". Do NOT offer suggestions.
 
-User Input: {{{userInput}}}`,
-});
+User Input: {{{userInput}}}`;
 
-// Define the Genkit flow
-const generatePersonalizedRecommendationsFlow = ai.defineFlow(
-  {
-    name: 'generatePersonalizedRecommendationsFlow',
-    inputSchema: GeneratePersonalizedRecommendationsInputSchema,
-    outputSchema: GeneratePersonalizedRecommendationsOutputSchema,
-  },
-  async input => {
-    const {output} = await personalizedRecommendationsPrompt(input);
-    return output!;
+    // Bind tools to see if the model decides to search YouTube
+    const modelWithTools = llm.bindTools([youtubeSearchTool]);
+    const response = await modelWithTools.invoke([
+      new SystemMessage(systemPrompt.replace('{{{userInput}}}', input.userInput)),
+      new HumanMessage(input.userInput),
+    ]);
+
+    if (response.tool_calls && response.tool_calls.length > 0) {
+      const toolCall = response.tool_calls[0];
+      if (toolCall.name === 'youtubeSearchTool') {
+        const toolResult = await youtubeSearchTool.invoke(toolCall.args as any);
+        const finalResponse = await llm.withStructuredOutput(GeneratePersonalizedRecommendationsOutputSchema).invoke([
+          new SystemMessage(systemPrompt.replace('{{{userInput}}}', input.userInput)),
+          new HumanMessage(input.userInput),
+          response,
+          new ToolMessage({
+            content: typeof toolResult === 'string' ? toolResult : ((toolResult && typeof toolResult === 'object' && 'content' in toolResult) ? (toolResult as any).content : JSON.stringify(toolResult)),
+            tool_call_id: toolCall.id!,
+          }),
+        ]);
+        return finalResponse;
+      }
+    }
+
+    const structuredLlm = llm.withStructuredOutput(GeneratePersonalizedRecommendationsOutputSchema);
+    const finalResponse = await structuredLlm.invoke([
+      new SystemMessage(systemPrompt.replace('{{{userInput}}}', input.userInput)),
+      new HumanMessage(input.userInput),
+    ]);
+
+    return finalResponse;
+  } catch (error) {
+    console.error("Suppressed API Error in generatePersonalizedRecommendations:", error);
+    return {
+      recommendations: "Thank you for sharing your thoughts with me. I recommend taking a short five minute mindfulness break, trying one of our calming games, or reading our guide on stress management in the resource library."
+    };
   }
-);
+}

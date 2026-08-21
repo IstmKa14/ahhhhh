@@ -1,6 +1,6 @@
 
 import type { Metadata } from 'next';
-import { Cormorant_Garamond, Plus_Jakarta_Sans } from 'next/font/google';
+import { Instrument_Serif, Inter } from 'next/font/google';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
@@ -9,15 +9,16 @@ import { Footer } from '@/components/layout/Footer';
 import { AuthProvider } from '@/hooks/use-auth';
 import { headers } from 'next/headers';
 
-const cormorant = Cormorant_Garamond({
+const instrumentSerif = Instrument_Serif({
   subsets: ['latin'],
-  variable: '--font-cormorant',
-  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-instrument-serif',
+  weight: ['400'],
+  style: ['normal', 'italic'],
 });
 
-const jakarta = Plus_Jakarta_Sans({
+const inter = Inter({
   subsets: ['latin'],
-  variable: '--font-jakarta',
+  variable: '--font-inter',
 });
 
 export const metadata: Metadata = {
@@ -41,8 +42,8 @@ export default async function RootLayout({
       </head>
       <body className={cn(
           'font-body antialiased', 
-          cormorant.variable,
-          jakarta.variable,
+          instrumentSerif.variable,
+          inter.variable,
           isChatPage && 'is-chat-page'
         )}>
           <AuthProvider>

@@ -29,8 +29,8 @@
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
 
-  --font-body: var(--font-jakarta), sans-serif;
-  --font-headline: var(--font-cormorant), serif;
+  --font-body: var(--font-inter), sans-serif;
+  --font-headline: var(--font-instrument-serif), serif;
   --font-code: monospace;
 
   --radius-lg: var(--radius);
@@ -68,33 +68,33 @@
 }
 
 :root {
-  --background: 60 10% 98%; /* #FBFBF9 - Warm Linen */
-  --foreground: 140 6% 10%; /* #191C1A - Ink Black */
+  --background: 60 9% 96.7%; /* #F8F8F5 - Soft Editorial White */
+  --foreground: 0 0% 6.7%; /* #111111 - Ink Black */
 
-  --card: 51 22% 95%; /* #F5F4EE - Stone Paper */
-  --card-foreground: 140 6% 10%;
+  --card: 0 0% 100%; /* #FFFFFF - Elevated Pure White Surface */
+  --card-foreground: 0 0% 6.7%;
 
-  --popover: 51 22% 95%;
-  --popover-foreground: 140 6% 10%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 6.7%;
 
-  --primary: 151 29% 14%; /* #1A2F25 - Deep Forest Ink */
-  --primary-foreground: 60 10% 98%;
+  --primary: 0 0% 6.7%; /* #111111 */
+  --primary-foreground: 60 9% 96.7%;
 
-  --secondary: 149 12% 61%; /* #8FA89B - Muted Leaves */
-  --secondary-foreground: 151 29% 14%;
+  --secondary: 60 11% 94.5%; /* #F3F3EF - Surface Muted */
+  --secondary-foreground: 0 0% 6.7%;
 
-  --muted: 51 10% 90%;
-  --muted-foreground: 149 10% 40%;
+  --muted: 60 11% 94.5%;
+  --muted-foreground: 60 2% 41.2%; /* #6B6B67 - Muted Text */
 
-  --accent: 23 56% 69%; /* #DCA482 - Terracotta Blossom */
-  --accent-foreground: 151 29% 14%;
+  --accent: 60 11% 94.5%;
+  --accent-foreground: 0 0% 6.7%;
 
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 0 0% 100%;
 
-  --border: 48 14% 87%; /* #E3E1D9 - Paper Edge */
-  --input: 48 14% 87%;
-  --ring: 151 29% 14%;
+  --border: 60 7% 88.8%; /* #E5E5E0 */
+  --input: 60 7% 85.1%; /* #DCDCD6 */
+  --ring: 0 0% 6.7%;
 
   --radius: 0.125rem; /* 2px - Editorial sharp corners */
 }

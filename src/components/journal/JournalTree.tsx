@@ -31,7 +31,7 @@ export function JournalTree({ entryCount, treeName: initialTreeName, uid }: Jour
         }
         setIsSaving(true);
         try {
-            await updateTreeName(newName, uid);
+            await updateTreeName(newName);
             toast({ title: 'Tree name updated!' });
             setIsEditingName(false);
         } catch (error: any) {

@@ -74,8 +74,6 @@ export function TreeAiChatDialog({ isOpen, onOpenChange, user, treeState }: Tree
       const result = await treeAiChat({
         userInput: input,
         treeName: treeState.name,
-        treeHealth: treeState.health,
-        treeMood: treeState.mood,
       });
 
       const assistantMessage: Message = { role: 'assistant', content: result.response };
