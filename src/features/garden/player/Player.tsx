@@ -1,7 +1,7 @@
 'use client';
 
 // Player: the movable character in the Garden featuring the redesigned Bloom companion.
-// Uses optimized ref tracking for 60fps movement and smooth rotation physics.
+// Uses exact analytical ground height sampling so feet never float or sink into slopes.
 
 import { useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
@@ -13,6 +13,7 @@ import {
 import { usePlayerMovement } from './usePlayerMovement';
 import { useFollowCamera } from './useFollowCamera';
 import { BloomCharacter } from './BloomCharacter';
+import { getTerrainHeight } from '../utils/terrainMath';
 import type { VelocityVector } from '../types/garden.types';
 
 interface PlayerProps {
@@ -52,16 +53,8 @@ export function Player({ positionRef, mobileVelocityRef }: PlayerProps) {
     pos.x = THREE.MathUtils.clamp(pos.x + vx * speed, -HALF_TERRAIN, HALF_TERRAIN);
     pos.z = THREE.MathUtils.clamp(pos.z + vz * speed, -HALF_TERRAIN, HALF_TERRAIN);
 
-    // Elevation adjustment based on terrain undulation
-    const x = pos.x;
-    const z = pos.z;
-    const dist = Math.sqrt(x * x + z * z);
-    const hillNoise1 = Math.sin(x * 0.1) * Math.cos(z * 0.08) * 0.8;
-    const hillNoise2 = Math.cos(x * 0.05 + 1.2) * Math.sin(z * 0.06) * 1.2;
-    const pathDist = Math.abs(x - Math.sin(z * 0.15) * 4);
-    const pathDampen = Math.min(1, Math.max(0, (pathDist - 1.5) / 4));
-    const perimeterRise = Math.pow(Math.max(0, (dist - 18) / 12), 2) * 2.5;
-    pos.y = (hillNoise1 + hillNoise2) * pathDampen * 0.4 + perimeterRise;
+    // Exact ground detection via analytical terrain math
+    pos.y = getTerrainHeight(pos.x, pos.z);
 
     if (meshRef.current) {
       meshRef.current.position.copy(pos);
@@ -72,7 +65,7 @@ export function Player({ positionRef, mobileVelocityRef }: PlayerProps) {
         meshRef.current.rotation.y = THREE.MathUtils.lerp(
           meshRef.current.rotation.y,
           targetAngle,
-          0.15
+          0.18
         );
       }
     }
