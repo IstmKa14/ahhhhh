@@ -32,11 +32,13 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const headerList = await headers();
-  const pathname = headerList.get('next-url') || '';
+  const pathname = headerList.get('x-pathname') || headerList.get('next-url') || '';
   const isChatPage = pathname.startsWith('/chat');
+  const isGardenPage = pathname.startsWith('/garden');
+  const isImmersive = isGardenPage || isChatPage;
 
   return (
-    <html lang="en" style={{'--header-height': '64px'} as React.CSSProperties}>
+    <html lang="en" style={{'--header-height': isGardenPage ? '0px' : '64px'} as React.CSSProperties}>
       <head>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239FD8FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 2a5 5 0 0 0-5 5c0 1.38.56 2.63 1.46 3.54' /><path d='M12 22a5 5 0 0 0 5-5c0-1.38-.56-2.63-1.46-3.54' /><path d='M22 12a5 5 0 0 0-5-5c-1.38 0-2.63.56-3.54 1.46' /><path d='M2 12a5 5 0 0 0 5 5c1.38 0 2.63-.56 3.54-1.46' /></svg>" />
       </head>
@@ -44,16 +46,22 @@ export default async function RootLayout({
           'font-body antialiased', 
           instrumentSerif.variable,
           inter.variable,
-          isChatPage && 'is-chat-page'
+          isChatPage && 'is-chat-page',
+          isGardenPage && 'is-garden-page'
         )}>
           <AuthProvider>
             <div className={cn(
               "relative flex min-h-screen flex-col bg-background",
-              isChatPage && "h-screen overflow-hidden"
+              isChatPage && "h-screen overflow-hidden",
+              isGardenPage && "h-screen w-screen overflow-hidden p-0 m-0"
             )}>
-              <Header />
-              <main className="flex-1 flex flex-col pt-[var(--header-height)]">{children}</main>
-              <Footer />
+              {!isGardenPage && <Header />}
+              <main className={cn(
+                "flex-1 flex flex-col",
+                !isGardenPage && "pt-[var(--header-height)]",
+                isGardenPage && "h-full w-full p-0 m-0 overflow-hidden"
+              )}>{children}</main>
+              {!isGardenPage && <Footer />}
             </div>
             <Toaster />
           </AuthProvider>

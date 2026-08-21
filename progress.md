@@ -4,7 +4,7 @@ This file tracks the status of the MindBloom project.
 
 ## Current Status
 
-We have created the new premium editorial design DNA and applied it globally. We built a seven section animated landing page using GSAP and Lenis. The layout is clean and minimal, matching the serene theme of the ancient tree spirit.
+The MindBloom v2 rebuild is underway. The 3D Garden foundation has been built. The Garden feature is in-progress pending verify and test.
 
 ## Completed Tasks
 
@@ -14,6 +14,19 @@ We have created the new premium editorial design DNA and applied it globally. We
 * Built a new minimal hero section on the landing page, removing old sections and complex animations
 * Built a seven section animated landing page using GSAP and Lenis, including an interactive breathing space, bento grid, and sequential dialogue preview
 * Migrated the AI layer from Genkit to LangChain using the Groq model
+* **Phase 1: R3F + Garden foundation (in-progress, pending verify)**
+  * Installed three, @react-three/fiber, @react-three/drei, nipplejs; added transpilePackages to next.config.ts
+  * Created full feature architecture under src/features/garden/ (types, constants, performance, player, scene, systems, components)
+  * Built quality system with Low, Medium, High profiles persisted to localStorage
+  * Built Garden layout at /garden with complete removal of global Header and Footer via middleware x-pathname detection
+  * Built Player component with WASD movement using refs inside useFrame (no React state per frame)
+  * Built lerp spring follow camera (useFollowCamera hook)
+  * Implemented complete 3D visual & environment redesign: sculpted rolling hills with depression ponds, stone path winding toward focal areas, mature forest & flowering cherry trees with canopy layers, tranquil translucent pond with ripples, lilypads and perimeter boulders, weathered wooden bench, Japanese stone lantern, vintage watering can, multi-species flower beds, and golden floating pollen particles
+  * Created stylized artisanal 3D Bloom companion with breathing life cycles, walking hops, fluttering leaf sprout, and blinking charcoal eyes
+  * Built proximity interaction system (useInteractionSystem, InteractionDetector)
+  * Built GardenUI React layer with return navigation, interaction prompts, quality toggle, and touch controls
+  * Built GardenErrorBoundary for WebGL failures
+  * Added Garden link to Header navigation
 
 ## Recent Fixes
 

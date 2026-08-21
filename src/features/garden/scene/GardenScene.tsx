@@ -1,12 +1,12 @@
 'use client';
 
-// GardenScene: composes all Three.js scene content.
-// Lights, sky, terrain, and placeholder objects.
-// This is the only place that knows about scene-level composition.
+// GardenScene: Composes Japanese-botanical garden aesthetic with warm late-afternoon sunlight,
+// layered forest horizon, organic sculpted terrain, rich environmental props, and ambient pollen atmosphere.
 
 import { Sky } from '@react-three/drei';
 import { Terrain } from './Terrain';
-import { PlaceholderObjects } from './PlaceholderObjects';
+import { EnvironmentProps } from './EnvironmentProps';
+import { Atmosphere } from './Atmosphere';
 import type { InteractiveObjectConfig, QualityProfile } from '../types/garden.types';
 import { FOG_NEAR, FOG_FAR_LOW, FOG_FAR_MEDIUM, FOG_FAR_HIGH } from '../constants/garden.constants';
 
@@ -16,9 +16,9 @@ interface GardenSceneProps {
 }
 
 function getFogFar(profile: QualityProfile): number {
-  if (!profile.shadowsEnabled) return FOG_FAR_LOW;      // low quality
-  if (profile.shadowMapSize <= 1024) return FOG_FAR_MEDIUM; // medium quality
-  return FOG_FAR_HIGH;                                   // high quality
+  if (!profile.shadowsEnabled) return FOG_FAR_LOW;
+  if (profile.shadowMapSize <= 1024) return FOG_FAR_MEDIUM;
+  return FOG_FAR_HIGH;
 }
 
 export function GardenScene({ profile, onRegisterObjects }: GardenSceneProps) {
@@ -26,42 +26,50 @@ export function GardenScene({ profile, onRegisterObjects }: GardenSceneProps) {
 
   return (
     <>
-      {/* Fog: creates depth and hides the terrain edge */}
-      <fog attach="fog" args={['#C8D8C0', FOG_NEAR, fogFar]} />
+      {/* Soft Cinematic Atmospheric Fog blending into the horizon */}
+      <fog attach="fog" args={['#D8E2DC', FOG_NEAR, fogFar]} />
 
-      {/* Sky: warm afternoon sun position */}
+      {/* Warm Golden Hour Sky */}
       <Sky
-        sunPosition={[100, 20, 100]}
-        inclination={0.49}
-        azimuth={0.25}
-        turbidity={6}
-        rayleigh={0.5}
+        sunPosition={[60, 24, 80]}
+        inclination={0.52}
+        azimuth={0.35}
+        turbidity={4}
+        rayleigh={0.65}
+        mieCoefficient={0.005}
+        mieDirectionalG={0.8}
       />
 
-      {/* Ambient light: fills shadows softly */}
-      <ambientLight intensity={0.7} color="#FFF5E0" />
+      {/* Ambient & Hemisphere Lighting for Rich Botanical Shadows */}
+      <ambientLight intensity={0.65} color="#FFF7EC" />
+      <hemisphereLight args={['#FAF3DD', '#4A5B43', 0.55]} />
 
-      {/* Directional light: primary light source with optional shadows */}
+      {/* Warm Directional Sunlight Casting Soft Long Shadows */}
       <directionalLight
-        position={[10, 15, 10]}
-        intensity={1.2}
-        color="#FFF8E7"
+        position={[25, 30, 25]}
+        intensity={1.35}
+        color="#FFF2D6"
         castShadow={profile.shadowsEnabled}
         shadow-mapSize={[profile.shadowMapSize, profile.shadowMapSize]}
-        shadow-camera-far={60}
-        shadow-camera-left={-20}
-        shadow-camera-right={20}
-        shadow-camera-top={20}
-        shadow-camera-bottom={-20}
-        shadow-bias={-0.001}
+        shadow-camera-far={70}
+        shadow-camera-left={-25}
+        shadow-camera-right={25}
+        shadow-camera-top={25}
+        shadow-camera-bottom={-25}
+        shadow-bias={-0.0005}
       />
 
-      {/* Fill light from opposite side for softer look */}
-      <directionalLight position={[-8, 8, -8]} intensity={0.3} color="#D0E8FF" />
+      {/* Cool Sky Fill Light to enrich shaded greenery */}
+      <directionalLight position={[-15, 12, -15]} intensity={0.35} color="#BEE3DB" />
 
+      {/* Natural Sculpted Terrain with Stepping Stone Paths */}
       <Terrain />
 
-      <PlaceholderObjects onRegisterObjects={onRegisterObjects} />
+      {/* Rich Layered Trees, Pond, Bench, Botanical Flowers & Props */}
+      <EnvironmentProps onRegisterObjects={onRegisterObjects} />
+
+      {/* Drifting Golden Pollen Particles */}
+      <Atmosphere particleCount={profile.particleCount} />
     </>
   );
 }

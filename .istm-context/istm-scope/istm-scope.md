@@ -67,12 +67,12 @@ Install React Three Fiber, drei, and Three.js. Build a performant, extensible Ga
 **Done when:** the Garden page loads at `/garden`, a basic scene with terrain, ambient lighting, and a sky renders; the player can move with WASD on desktop and a virtual joystick on mobile; frame rate holds at 60fps on a mid range device; the canvas and React UI layers are cleanly separated as `GardenCanvas` and `GardenUI`; the performance foundation (InstancedMesh pattern, LOD stubs, quality level config, frustum culling hooks) is in place for later features to use.
 
 - [x] Design it (spec): `/istm-craft R3F + Garden foundation`
-- [ ] Build it: `/istm-develop R3F + Garden foundation`
-   - [ ] Install R3F, drei, three, nipplejs; add transpilePackages to next.config.ts if needed
-   - [ ] Types, constants, quality profiles, and useQualityLevel hook
-   - [ ] Garden layout + page route; Player movement hooks + Player component
-   - [ ] Garden scene (terrain, sky, lights, placeholder objects with InstancedMesh)
-   - [ ] Interaction system, GardenCanvas, GardenUI, MobileControls, error boundary; Header nav link
+- [x] Build it: `/istm-develop R3F + Garden foundation`
+   - [x] Install R3F, drei, three, nipplejs; add transpilePackages to next.config.ts if needed
+   - [x] Types, constants, quality profiles, and useQualityLevel hook
+   - [x] Garden layout + page route; Player movement hooks + Player component
+   - [x] Garden scene (terrain, sky, lights, placeholder objects with InstancedMesh)
+   - [x] Interaction system, GardenCanvas, GardenUI, MobileControls, error boundary; Header nav link
 - [ ] Verify it: `/istm-check verify R3F + Garden foundation`
 - [ ] Test it: `/istm-test R3F + Garden foundation`
 Spec 0001 · code in `src/features/garden/` and `src/app/garden/`

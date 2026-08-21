@@ -17,10 +17,12 @@ export type InteractableType =
   | 'plant'
   | 'seed'
   | 'watering_can'
+  | 'pot'
   | 'pond'
   | 'bench'
   | 'bloom'
   | 'tree'
+  | 'nav_wall'
   | 'journal_object'
   | 'resource_object';
 
@@ -40,7 +42,19 @@ export type BloomState =
   | 'speaking'
   | 'happy'
   | 'curious'
+  | 'walking'
+  | 'celebrating'
   | 'resting';
+
+export type PlantGrowthStage = 'seed' | 'sprout' | 'growing' | 'blooming';
+
+export interface PlantPotData {
+  id: string;
+  position: [number, number, number];
+  stage: PlantGrowthStage;
+  waterLevel: number; // 0 to 100
+  flowerColor: string;
+}
 
 export interface PlayerState {
   position: [number, number, number];
