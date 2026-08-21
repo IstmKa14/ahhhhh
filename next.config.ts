@@ -3,6 +3,7 @@ import type {NextConfig} from 'next';
 
 const nextConfig: any = {
   output: 'standalone',
+  transpilePackages: ['three', '@react-three/fiber', '@react-three/drei'],
   /* config options here */
   experimental: {
     serverActions: {
