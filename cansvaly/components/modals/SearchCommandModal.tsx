@@ -14,9 +14,13 @@ import {
   CommandShortcut,
 } from '@/components/ui/command';
 
+import { searchBoardsAction } from '@/app/(dashboard)/actions';
+
 export function SearchCommandModal() {
   const router = useRouter();
   const { isSearchOpen, closeSearch, toggleSearch, openNewBoard } = useModalStore();
+  const [query, setQuery] = React.useState('');
+  const [searchResults, setSearchResults] = React.useState<any[]>([]);
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -30,6 +34,18 @@ export function SearchCommandModal() {
     return () => document.removeEventListener('keydown', down);
   }, [toggleSearch]);
 
+  React.useEffect(() => {
+    if (!query.trim()) {
+      setSearchResults([]);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      const results = await searchBoardsAction(query);
+      setSearchResults(results);
+    }, 200);
+    return () => clearTimeout(timer);
+  }, [query]);
+
   const runCommand = React.useCallback(
     (command: () => void) => {
       closeSearch();
@@ -40,9 +56,26 @@ export function SearchCommandModal() {
 
   return (
     <CommandDialog open={isSearchOpen} onOpenChange={(open) => !open && closeSearch()}>
-      <CommandInput placeholder="Type a command or search boards..." />
+      <CommandInput placeholder="Type a command or search boards..." value={query} onValueChange={setQuery} />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
+        {searchResults.length > 0 && (
+          <CommandGroup heading="Boards">
+            {searchResults.map((board) => (
+              <CommandItem
+                key={board.id}
+                onSelect={() =>
+                  runCommand(() => {
+                    router.push(`/board/${board.id}`);
+                  })
+                }
+              >
+                <LayoutGrid className="mr-2 h-4 w-4 text-primary" />
+                <span>{board.title}</span>
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        )}
         <CommandGroup heading="Quick Actions">
           <CommandItem
             onSelect={() =>

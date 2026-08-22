@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
 import { useModalStore } from '@/stores/modalStore';
+import { createBoardAction } from '@/app/(dashboard)/actions';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,8 +22,8 @@ interface NewBoardModalProps {
 
 const TEMPLATES = [
   { id: 'blank', title: 'Blank Canvas', desc: 'Start with a clean slate', icon: CanvasGridIcon },
-  { id: 'brainstorm', title: 'Brainstorm & Mindmap', desc: 'Sticky notes & connection maps', icon: BrainstormNodeIcon },
-  { id: 'architecture', title: 'System Architecture', desc: 'Flowcharts & infrastructure diagrams', icon: MagicSparkleIcon },
+  { id: 'brainstorming', title: 'Brainstorm & Mindmap', desc: 'Sticky notes & connection maps', icon: BrainstormNodeIcon },
+  { id: 'flowchart', title: 'System Architecture', desc: 'Flowcharts & infrastructure diagrams', icon: MagicSparkleIcon },
 ];
 
 const ACCENT_COLORS = [
@@ -43,24 +44,34 @@ export function NewBoardModal({ onBoardCreated }: NewBoardModalProps) {
   const [selectedColor, setSelectedColor] = React.useState('indigo');
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return;
 
     setIsSubmitting(true);
-    if (onBoardCreated) {
-      onBoardCreated(title.trim(), description.trim() || undefined);
-    }
+    try {
+      const res = await createBoardAction({
+        title: title.trim(),
+        description: description.trim() || undefined,
+        template: selectedTemplate as any,
+        isPublic: visibility === 'public',
+      });
 
-    const fakeBoardId = `board-${Date.now()}`;
-    setTimeout(() => {
+      if (res.success && res.boardId) {
+        if (onBoardCreated) {
+          onBoardCreated(title.trim(), description.trim() || undefined);
+        }
+        setTitle('');
+        setDescription('');
+        setSelectedTemplate('blank');
+        closeNewBoard();
+        router.push(`/board/${res.boardId}`);
+      }
+    } catch (err) {
+      console.error('Failed to create board:', err);
+    } finally {
       setIsSubmitting(false);
-      setTitle('');
-      setDescription('');
-      setSelectedTemplate('blank');
-      closeNewBoard();
-      router.push(`/board/${fakeBoardId}`);
-    }, 400);
+    }
   };
 
   return (

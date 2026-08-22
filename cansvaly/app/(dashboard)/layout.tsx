@@ -6,6 +6,8 @@ import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
 import { NewBoardModal } from '@/components/modals/NewBoardModal';
 import { SearchCommandModal } from '@/components/modals/SearchCommandModal';
 import { ShareModal } from '@/components/modals/ShareModal';
+import { RenameModal } from '@/components/modals/RenameModal';
+import { DeleteModal } from '@/components/modals/DeleteModal';
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { userId } = await auth();
@@ -24,6 +26,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <NewBoardModal />
       <SearchCommandModal />
       <ShareModal />
+      <RenameModal />
+      <DeleteModal />
     </div>
   );
 }

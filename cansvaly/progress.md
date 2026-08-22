@@ -142,9 +142,22 @@ Nothing currently in progress.
 - [ ] `stores/modalStore.ts` — which modal is open + payload
 - [ ] `stores/sidebarStore.ts` — collapsed state, active nav section
 
-### Server Actions
-- [ ] `app/(dashboard)/boards/actions.ts` — create, rename, delete board
-- [ ] `app/(dashboard)/org/[orgId]/actions.ts` — invite member, update role
+### Server Actions & Database Integration
+- [x] `lib/validations.ts` — Zod schemas for all Server Action inputs (`createBoardSchema`, `renameBoardSchema`, `inviteCollaboratorSchema`)
+- [x] `app/(dashboard)/actions.ts` — Drizzle ORM queries and Server Actions:
+  - `createBoardAction` — creates board record in Neon DB & owner in `board_members`
+  - `getBoardsAction` — queries boards with filters (`all`, `favorites`, `shared`)
+  - `renameBoardAction` — renames board title in Neon DB
+  - `deleteBoardAction` — deletes board record from Neon DB
+  - `searchBoardsAction` — real-time ILIKE query for `⌘K` command palette
+  - `inviteCollaboratorAction` — adds user to `board_members`
+- [x] `app/(dashboard)/page.tsx` — connected to real Neon DB boards via `getBoardsAction`
+- [x] `components/modals/NewBoardModal.tsx` — wired to `createBoardAction`
+- [x] `components/modals/SearchCommandModal.tsx` — wired to `searchBoardsAction`
+- [x] `components/modals/ShareModal.tsx` — wired to `inviteCollaboratorAction` with dynamic room links and email invitation access
+- [x] `components/modals/RenameModal.tsx` — dedicated rename modal replacing native confirm dialogs
+- [x] `components/modals/DeleteModal.tsx` — dedicated delete confirmation modal replacing native confirm dialogs
+- [x] `duplicateBoardAction` in `app/(dashboard)/actions.ts` — creates copy of board titled `Title copy(1)`
 
 ### File Storage (S3 + ImageKit)
 - [ ] Install `@aws-sdk/client-s3`

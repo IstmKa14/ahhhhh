@@ -47,7 +47,7 @@ export function BoardCard({
   onShare,
 }: BoardCardProps) {
   const [favorited, setFavorited] = React.useState(isFavorited);
-  const { openShare } = useModalStore();
+  const { openShare, openRename, openDelete } = useModalStore();
 
   const handleFavorite = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -62,7 +62,27 @@ export function BoardCard({
     if (onShare) {
       onShare(id);
     } else {
-      openShare(title);
+      openShare(id, title);
+    }
+  };
+
+  const handleRename = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onRename) {
+      onRename(id);
+    } else {
+      openRename(id, title);
+    }
+  };
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onDelete) {
+      onDelete(id);
+    } else {
+      openDelete(id, title);
     }
   };
 
@@ -122,11 +142,11 @@ export function BoardCard({
                 <UserPlus className="mr-2 h-3.5 w-3.5" />
                 <span>Share Board</span>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onRename?.(id)}>
+              <DropdownMenuItem onClick={handleRename}>
                 <Pencil className="mr-2 h-3.5 w-3.5" />
                 <span>Rename</span>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onDuplicate?.(id)}>
+              <DropdownMenuItem onClick={(e) => { e.preventDefault(); e.stopPropagation(); onDuplicate?.(id); }}>
                 <Copy className="mr-2 h-3.5 w-3.5" />
                 <span>Duplicate</span>
               </DropdownMenuItem>
@@ -135,7 +155,7 @@ export function BoardCard({
                 <span>{favorited ? 'Unfavorite' : 'Favorite'}</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => onDelete?.(id)} className="text-destructive focus:text-destructive">
+              <DropdownMenuItem onClick={handleDelete} className="text-destructive focus:text-destructive">
                 <Trash2 className="mr-2 h-3.5 w-3.5" />
                 <span>Delete</span>
               </DropdownMenuItem>

@@ -9,14 +9,19 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 
+import { inviteCollaboratorAction } from '@/app/(dashboard)/actions';
+
 export function ShareModal() {
-  const { isShareOpen, closeShare, activeShareBoardTitle } = useModalStore();
+  const { isShareOpen, closeShare, activeShareBoardId, activeShareBoardTitle } = useModalStore();
   const [copied, setCopied] = React.useState(false);
   const [email, setEmail] = React.useState('');
   const [role, setRole] = React.useState<'editor' | 'viewer' | 'commenter'>('editor');
   const [invited, setInvited] = React.useState(false);
+  const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
 
-  const shareableUrl = typeof window !== 'undefined' ? `${window.location.origin}/board/share-preview` : 'https://canvasly.app/board/share-preview';
+  const shareableUrl = typeof window !== 'undefined' 
+    ? `${window.location.origin}/board/${activeShareBoardId || 'share'}` 
+    : `https://canvasly.app/board/${activeShareBoardId || 'share'}`;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(shareableUrl);
@@ -24,14 +29,30 @@ export function ShareModal() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleInvite = (e: React.FormEvent) => {
+  const handleInvite = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) return;
-    setInvited(true);
-    setTimeout(() => {
-      setEmail('');
-      setInvited(false);
-    }, 2000);
+    if (!email.trim() || !activeShareBoardId) return;
+    setErrorMsg(null);
+
+    try {
+      const res = await inviteCollaboratorAction({
+        boardId: activeShareBoardId,
+        email: email.trim(),
+        role,
+      });
+
+      if (res.success) {
+        setInvited(true);
+        setTimeout(() => {
+          setEmail('');
+          setInvited(false);
+        }, 2000);
+      } else {
+        setErrorMsg(res.error || 'Failed to send invite');
+      }
+    } catch (err) {
+      setErrorMsg('Failed to send invite');
+    }
   };
 
   return (

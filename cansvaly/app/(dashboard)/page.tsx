@@ -4,68 +4,63 @@ import * as React from 'react';
 import { useSearchParams } from 'next/navigation';
 import { BoardGrid } from '@/components/board/BoardGrid';
 import { BoardCardProps } from '@/components/board/BoardCard';
-
-const MOCK_BOARDS: BoardCardProps[] = [
-  {
-    id: 'b1',
-    title: 'Product Roadmap 2026',
-    description: 'Q3 & Q4 planning canvas with feature dependencies',
-    thumbnailUrl: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=800&q=80', // Blue and orange abstract motion blur
-    isFavorited: true,
-    updatedAt: '2 hours ago',
-    ownerName: 'You',
-  },
-  {
-    id: 'b2',
-    title: 'System Architecture Diagram',
-    description: 'Real-time sync engine & database layout',
-    thumbnailUrl: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=800&q=80', // Vibrant blue/orange gradient motion blur
-    isFavorited: false,
-    updatedAt: 'Yesterday',
-    ownerName: 'Alex Chen',
-  },
-  {
-    id: 'b3',
-    title: 'Design System & Token Spec',
-    description: 'Typography, semantic palette & component guidelines',
-    thumbnailUrl: 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=800&q=80', // Soft dreamy blue-orange fluid motion blur
-    isFavorited: true,
-    updatedAt: '3 days ago',
-    ownerName: 'You',
-  },
-  {
-    id: 'b4',
-    title: 'Customer Feedback & Ideas',
-    description: 'Sticky notes from quarterly user interviews',
-    thumbnailUrl: 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=800&q=80', // Dreamy sunset blue and orange motion light streaks
-    isFavorited: false,
-    updatedAt: '1 week ago',
-    ownerName: 'Sarah Jenkins',
-  },
-];
+import { getBoardsAction, duplicateBoardAction } from '@/app/(dashboard)/actions';
 
 export default function DashboardPage() {
   const searchParams = useSearchParams();
   const filterParam = searchParams.get('filter');
   const filter = filterParam === 'favorites' ? 'favorites' : filterParam === 'shared' ? 'shared' : 'all';
 
-  const [boards, setBoards] = React.useState<BoardCardProps[]>(MOCK_BOARDS);
+  const [boards, setBoards] = React.useState<BoardCardProps[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [isInitialLoad, setIsInitialLoad] = React.useState(true);
 
-  const handleNewBoard = () => {
-    const unsplashImages = [
-      'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=800&q=80',
-    ];
-    const newBoard: BoardCardProps = {
-      id: `b${Date.now()}`,
-      title: 'Untitled Board',
-      thumbnailUrl: unsplashImages[Math.floor(Math.random() * unsplashImages.length)],
-      isFavorited: false,
-      updatedAt: 'Just now',
-      ownerName: 'You',
+  const loadBoards = React.useCallback(async () => {
+    if (isInitialLoad) setIsLoading(true);
+    try {
+      const dbBoards = await getBoardsAction(filter);
+      const mapped: BoardCardProps[] = dbBoards.map((b) => ({
+        id: b.id,
+        title: b.title,
+        thumbnailUrl: b.imageUrl,
+        isFavorited: false,
+        updatedAt: new Date(b.updatedAt).toLocaleDateString(),
+        ownerName: b.authorName || 'You',
+      }));
+      setBoards(mapped);
+    } catch (err) {
+      console.error('Failed to load boards from Neon DB:', err);
+    } finally {
+      setIsLoading(false);
+      setIsInitialLoad(false);
+    }
+  }, [filter, isInitialLoad]);
+
+  React.useEffect(() => {
+    loadBoards();
+
+    // 3-second light polling interval to automatically keep board lists synced
+    const interval = setInterval(() => {
+      loadBoards();
+    }, 3000);
+
+    // Refetch when tab regains focus
+    const onFocus = () => loadBoards();
+    window.addEventListener('focus', onFocus);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('focus', onFocus);
     };
-    setBoards((prev) => [newBoard, ...prev]);
+  }, [loadBoards]);
+
+  const handleDuplicate = async (id: string) => {
+    try {
+      await duplicateBoardAction(id);
+      await loadBoards();
+    } catch (err) {
+      console.error('Failed to duplicate board:', err);
+    }
   };
 
   return (
@@ -85,7 +80,14 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <BoardGrid boards={boards} filter={filter} onNewBoard={handleNewBoard} />
+      <BoardGrid
+        boards={boards.map((b) => ({
+          ...b,
+          onDuplicate: handleDuplicate,
+        }))}
+        isLoading={isLoading}
+        filter={filter}
+      />
     </div>
   );
 }
