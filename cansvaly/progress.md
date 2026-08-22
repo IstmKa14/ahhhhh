@@ -77,9 +77,9 @@ Nothing currently in progress.
 ## 📋 Pending — Ordered by Priority
 
 ### Auth (Clerk)
-- [x] Installed `@clerk/nextjs` & `@clerk/ui`
+- [x] Installed `@clerk/nextjs`
 - [x] `.env.local` — Created with Clerk API key placeholders
-- [x] `middleware.ts` — `clerkMiddleware()` protecting `/(dashboard)` and `/board/` routes with proxy matcher
+- [x] `proxy.ts` — Updated to Next.js 16 `proxy` file convention with `clerkMiddleware()` protecting `/(dashboard)` and `/board/` routes and Clerk proxy matcher
 - [x] `app/layout.tsx` — Wrapped in `<ClerkProvider>` inside `<body>`
 - [x] `app/(dashboard)/dashboard/page.tsx` — Protected workspace dashboard route with `<UserButton />` and board grid empty state
 - [x] `app/page.tsx` — Header updated with `<SignedIn>`, `<SignedOut>`, `<SignInButton>`, `<SignUpButton>`, and `<UserButton>`
