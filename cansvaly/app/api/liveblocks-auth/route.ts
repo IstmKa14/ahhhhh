@@ -5,8 +5,14 @@ import { boardMembers, users } from '@/db/schema';
 import { eq, and } from 'drizzle-orm';
 import { getPresenceColor } from '@/lib/presence-colors';
 
+const secretKey =
+  process.env.LIVEBLOCKS_SECRET_KEY ||
+  process.env.NEXT_LIVEBLOCK_SECRET_KEY ||
+  process.env.NEXT_LIVEBLOCKS_SECRET_KEY ||
+  'sk_dev_dummy_key_for_build';
+
 const liveblocks = new Liveblocks({
-  secret: process.env.LIVEBLOCKS_SECRET_KEY || 'sk_dev_dummy_key_for_build',
+  secret: secretKey,
 });
 
 export const runtime = 'nodejs';
