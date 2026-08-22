@@ -121,26 +121,28 @@ Nothing currently in progress.
 - [x] `lib/constants.ts` — layout dimension constants (`TOPBAR_HEIGHT`, `SIDEBAR_WIDTH`)
 
 ### Board Canvas (tldraw + Liveblocks)
-- [ ] Install `tldraw`, `@tldraw/sync`, `liveblocks`
-- [ ] Add `LIVEBLOCKS_SECRET_KEY` to `.env.local`
-- [ ] `lib/liveblocks.ts` — Liveblocks client config
-- [ ] `app/api/liveblocks-auth/route.ts` — room JWT issuer (Node.js runtime)
-- [ ] `app/board/[boardId]/page.tsx` — thin page rendering Canvas
-- [ ] `app/board/[boardId]/loading.tsx` — full-screen skeleton
-- [ ] `components/canvas/Canvas.tsx` — tldraw loaded via `next/dynamic({ ssr: false })`
-- [ ] `components/canvas/Toolbar.tsx` — custom CanvaslyToolbar overriding tldraw default
-- [ ] `components/canvas/Cursors.tsx` — collaborator cursor overlay at z-50
-- [ ] `components/canvas/Presence.tsx` — avatar bar in top bar (up to 4 + N more)
+- [x] Install `tldraw`, `@tldraw/sync`, `liveblocks`
+- [x] `lib/liveblocks.ts` — Liveblocks client config
+- [x] `app/api/liveblocks-auth/route.ts` — room JWT issuer (Node.js runtime)
+- [x] `app/board/[boardId]/page.tsx` — thin page rendering Canvas
+- [x] `app/board/[boardId]/loading.tsx` — full-screen skeleton
+- [x] `components/canvas/Canvas.tsx` — tldraw loaded via `next/dynamic({ ssr: false })`
+- [x] `components/canvas/Toolbar.tsx` — custom CanvaslyToolbar overriding tldraw default
+- [x] `components/canvas/Cursors.tsx` — collaborator cursor overlay at z-50
+- [x] `components/canvas/Presence.tsx` — avatar bar in top bar (up to 4 + N more)
+- [x] `components/canvas/CanvasComments.tsx` — anchored comment pins layer & slide-over thread panel
+- [x] `components/canvas/BoardHeader.tsx` — top navigation bar with inline title editing
+- [x] `components/canvas/ZoomControls.tsx` — floating zoom controls
 
 ### Liveblocks Presence
-- [ ] `hooks/usePresence.ts` — broadcast cursor position, selected shapes, user metadata
-- [ ] `types/liveblocks.ts` — typed presence schema
-- [ ] Cursor throttle at 16ms (`CURSOR_THROTTLE_MS` constant)
+- [x] `hooks/usePresence.ts` — broadcast cursor position, selected shapes, user metadata
+- [x] `types/liveblocks.ts` — typed presence schema
+- [x] Cursor throttle at 16ms (`CURSOR_THROTTLE_MS` constant)
 
 ### Zustand Stores
-- [ ] `stores/toolbarStore.ts` — active tool, stroke/fill color, stroke width
-- [ ] `stores/modalStore.ts` — which modal is open + payload
-- [ ] `stores/sidebarStore.ts` — collapsed state, active nav section
+- [x] `stores/toolbarStore.ts` — active tool, stroke/fill color, stroke width, comments panel state
+- [x] `stores/modalStore.ts` — which modal is open + payload
+- [x] `stores/sidebarStore.ts` — collapsed state, active nav section
 
 ### Server Actions & Database Integration
 - [x] `lib/validations.ts` — Zod schemas for all Server Action inputs (`createBoardSchema`, `renameBoardSchema`, `inviteCollaboratorSchema`)
