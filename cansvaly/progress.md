@@ -100,18 +100,24 @@ Nothing currently in progress.
 - [x] Configured Clerk authentication redirect environment variables (`NEXT_PUBLIC_CLERK_SIGN_IN_URL`, `NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL`, etc.)
 - [x] `app/(auth)/onboarding/page.tsx` — Minimal onboarding flow after registration (`/onboarding`)
 
-### Dashboard
-- [x] `app/(dashboard)/layout.tsx` — sidebar + main area shell layout
-- [x] `app/(dashboard)/page.tsx` — interactive board grid with filter tabs
+### Dashboard & Product Modals
+- [x] `app/(dashboard)/layout.tsx` — sidebar + main area shell layout with mounted modals
+- [x] `app/(dashboard)/page.tsx` — interactive board grid with filter tabs & Unsplash photography thumbnails
 - [x] `app/(dashboard)/boards/page.tsx` — redirect route to main dashboard
+- [x] `app/(dashboard)/settings/page.tsx` — workspace settings route (profile, canvas defaults, notifications)
 - [x] `components/dashboard/Sidebar.tsx` — fixed desktop sidebar (collapsible) + mobile sheet drawer
 - [x] `components/dashboard/DashboardHeader.tsx` — top header with search input, workspace badge, CTA, user button
-- [x] `components/dashboard/NewBoardButton.tsx` — create board button primitive
-- [x] `components/board/BoardCard.tsx` — 16:9 thumbnail preview + title + favorite toggle + overflow actions
+- [x] `components/dashboard/NewBoardButton.tsx` — create board button primitive triggering modal store
+- [x] `components/board/BoardCard.tsx` — 16:9 thumbnail preview + title + favorite toggle + overflow actions with Share modal trigger
 - [x] `components/board/BoardCardSkeleton.tsx` — loading skeleton for board cards
 - [x] `components/board/BoardGrid.tsx` — responsive grid layout with filter tabs
 - [x] `components/shared/EmptyState.tsx` — reusable empty state component with Lucide icons
+- [x] `components/shared/CustomIcons.tsx` — dedicated SVG vector icons (`CanvasGridIcon`, `MagicSparkleIcon`, `BrainstormNodeIcon`, `LockShieldIcon`, `TeamUsersIcon`)
+- [x] `components/modals/NewBoardModal.tsx` — multi-step board creation modal with starter template picker, access level toggles & accent colors
+- [x] `components/modals/SearchCommandModal.tsx` — `⌘K` / `Ctrl+K` command palette modal
+- [x] `components/modals/ShareModal.tsx` — invite collaborators by email and link sharing modal
 - [x] `stores/sidebarStore.ts` — Zustand store for sidebar collapse state
+- [x] `stores/modalStore.ts` — Zustand store for modal state management (`newBoard`, `search`, `share`)
 - [x] `lib/constants.ts` — layout dimension constants (`TOPBAR_HEIGHT`, `SIDEBAR_WIDTH`)
 
 ### Board Canvas (tldraw + Liveblocks)

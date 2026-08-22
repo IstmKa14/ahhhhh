@@ -2,8 +2,9 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { Star, MoreHorizontal, Pencil, Copy, Trash2 } from 'lucide-react';
+import { Star, MoreHorizontal, Pencil, Copy, Trash2, UserPlus } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useModalStore } from '@/stores/modalStore';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -28,6 +29,7 @@ export interface BoardCardProps {
   onDelete?: (id: string) => void;
   onRename?: (id: string) => void;
   onDuplicate?: (id: string) => void;
+  onShare?: (id: string) => void;
 }
 
 export function BoardCard({
@@ -42,14 +44,26 @@ export function BoardCard({
   onDelete,
   onRename,
   onDuplicate,
+  onShare,
 }: BoardCardProps) {
   const [favorited, setFavorited] = React.useState(isFavorited);
+  const { openShare } = useModalStore();
 
   const handleFavorite = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setFavorited(!favorited);
     onFavoriteToggle?.(id);
+  };
+
+  const handleShare = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onShare) {
+      onShare(id);
+    } else {
+      openShare(title);
+    }
   };
 
   return (
@@ -104,6 +118,10 @@ export function BoardCard({
               <span className="sr-only">Board actions</span>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-44">
+              <DropdownMenuItem onClick={handleShare}>
+                <UserPlus className="mr-2 h-3.5 w-3.5" />
+                <span>Share Board</span>
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onRename?.(id)}>
                 <Pencil className="mr-2 h-3.5 w-3.5" />
                 <span>Rename</span>

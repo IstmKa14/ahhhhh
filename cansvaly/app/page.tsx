@@ -4,6 +4,8 @@ import { Users, Zap, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/shared/Logo";
 import { CustomUserButton } from "@/components/dashboard/CustomUserButton";
+import DashboardLayout from "./(dashboard)/layout";
+import DashboardPage from "./(dashboard)/page";
 
 // ─── Feature data ────────────────────────────────────────────────────────────
 
@@ -33,9 +35,16 @@ const features = [
 export default async function HomePage() {
   const { userId } = await auth();
 
+  if (userId) {
+    return (
+      <DashboardLayout>
+        <DashboardPage />
+      </DashboardLayout>
+    );
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
-      {/* ── Navbar ──────────────────────────────────────────────────── */}
       <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md">
         <nav className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
           <Logo />
@@ -43,17 +52,17 @@ export default async function HomePage() {
           <div className="flex items-center gap-3">
             {!userId ? (
               <>
-                <Button variant="ghost" size="sm" render={<Link href="/sign-in" />}>
-                  Sign in
+                <Button variant="ghost" size="sm">
+                  <Link href="/sign-in">Sign in</Link>
                 </Button>
-                <Button size="sm" render={<Link href="/sign-up" />}>
-                  Get started free
+                <Button size="sm">
+                  <Link href="/sign-up">Get started free</Link>
                 </Button>
               </>
             ) : (
               <>
-                <Button variant="outline" size="sm" render={<Link href="/dashboard" />}>
-                  Go to Dashboard
+                <Button variant="outline" size="sm">
+                  <Link href="/dashboard">Go to Dashboard</Link>
                 </Button>
                 <CustomUserButton />
               </>
@@ -80,11 +89,11 @@ export default async function HomePage() {
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-            <Button size="lg" render={<Link href="/sign-up" />}>
-              Start for free
+            <Button size="lg">
+              <Link href="/sign-up">Start for free</Link>
             </Button>
-            <Button variant="outline" size="lg" render={<Link href="/sign-in" />}>
-              Sign in to your workspace
+            <Button variant="outline" size="lg">
+              <Link href="/sign-in">Sign in to your workspace</Link>
             </Button>
           </div>
         </section>
@@ -192,11 +201,11 @@ export default async function HomePage() {
               Create your first board in seconds. No credit card required.
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Button size="lg" render={<Link href="/sign-up" />}>
-                Create free account
+              <Button size="lg">
+                <Link href="/sign-up">Create free account</Link>
               </Button>
-              <Button variant="outline" size="lg" render={<Link href="/sign-in" />}>
-                Sign in
+              <Button variant="outline" size="lg">
+                <Link href="/sign-in">Sign in</Link>
               </Button>
             </div>
           </div>
