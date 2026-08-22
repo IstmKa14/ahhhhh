@@ -14,7 +14,7 @@ Last updated: 2026-08-22
 - [x] `components.json` configured with correct `@/*` alias paths
 - [x] `lib/utils.ts` — `cn()` helper (clsx + tailwind-merge)
 
-### Design System
+### Design System & Landing Page
 - [x] `app/globals.css` — full Canvasly token system:
   - Light + dark mode CSS variables for all 16 semantic tokens
   - `@theme inline` block mapping every Tailwind utility class
@@ -33,6 +33,8 @@ Last updated: 2026-08-22
   - Motion tokens
   - Spacing scale (8px grid)
   - Dark mode toggle (sticky top bar, moon/sun icon, toggles `.dark` on `<html>`)
+- [x] `components/shared/Logo.tsx` — Canvasly SVG wordmark and icon mark
+- [x] `app/page.tsx` — Landing page with sticky navbar, hero section, canvas preview strip, 3-column features grid, and CTA banner (wired with Next.js navigation to `/sign-in` and `/sign-up`)
 
 ### Project Structure
 - [x] Root-level folder structure established (no `src/` wrapper):
@@ -57,6 +59,12 @@ Last updated: 2026-08-22
   - `cansvaly/` — this project
   - `mindbllom/` — separate existing project
 - [x] Root is clean — only `cansvaly/` and `mindbllom/` at root level
+
+---
+
+### Auth UI Pages
+- [x] `app/(auth)/sign-in/[[...sign-in]]/page.tsx` — Split-screen login UI (Google OAuth button, Email/Password inputs, feature highlights, responsive layout)
+- [x] `app/(auth)/sign-up/[[...sign-up]]/page.tsx` — Split-screen signup UI (Google OAuth button, Name & Email/Password inputs, social proof highlights, responsive layout)
 
 ---
 
