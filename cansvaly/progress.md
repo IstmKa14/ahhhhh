@@ -77,12 +77,14 @@ Nothing currently in progress.
 ## 📋 Pending — Ordered by Priority
 
 ### Auth (Clerk)
-- [ ] Install `@clerk/nextjs`
-- [ ] Add `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY` to `.env.local`
-- [ ] `middleware.ts` — `clerkMiddleware()` protecting `/(dashboard)` and `/board/` routes
-- [ ] `app/(auth)/sign-in/[[...sign-in]]/page.tsx` — Clerk `<SignIn />` component
-- [ ] `app/(auth)/sign-up/[[...sign-up]]/page.tsx` — Clerk `<SignUp />` component
-- [ ] `app/api/clerk-webhook/route.ts` — sync Clerk user to Postgres `users` table
+- [x] Installed `@clerk/nextjs` & `@clerk/ui`
+- [x] `.env.local` — Created with Clerk API key placeholders
+- [x] `middleware.ts` — `clerkMiddleware()` protecting `/(dashboard)` and `/board/` routes with proxy matcher
+- [x] `app/layout.tsx` — Wrapped in `<ClerkProvider>` inside `<body>`
+- [x] `app/(dashboard)/dashboard/page.tsx` — Protected workspace dashboard route with `<UserButton />` and board grid empty state
+- [x] `app/page.tsx` — Header updated with `<SignedIn>`, `<SignedOut>`, `<SignInButton>`, `<SignUpButton>`, and `<UserButton>`
+- [x] `app/(auth)/sign-in/[[...sign-in]]/page.tsx` — Minimal sign in UI page
+- [x] `app/(auth)/sign-up/[[...sign-up]]/page.tsx` — Minimal sign up UI page
 
 ### Database (Drizzle + Neon)
 - [ ] Install `drizzle-orm`, `@neondatabase/serverless`, `drizzle-kit`

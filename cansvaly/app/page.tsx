@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import { Users, Zap, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/shared/Logo";
@@ -37,12 +38,24 @@ export default function HomePage() {
           <Logo />
 
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" render={<Link href="/sign-in" />}>
-              Sign in
-            </Button>
-            <Button size="sm" render={<Link href="/sign-up" />}>
-              Get started free
-            </Button>
+            <SignedOut>
+              <SignInButton mode="modal">
+                <Button variant="ghost" size="sm">
+                  Sign in
+                </Button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <Button size="sm">
+                  Get started free
+                </Button>
+              </SignUpButton>
+            </SignedOut>
+            <SignedIn>
+              <Button variant="outline" size="sm" render={<Link href="/dashboard" />}>
+                Go to Dashboard
+              </Button>
+              <UserButton afterSignOutUrl="/" />
+            </SignedIn>
           </div>
         </nav>
       </header>
