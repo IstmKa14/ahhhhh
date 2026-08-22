@@ -54,7 +54,7 @@ export default function HomePage() {
               <Button variant="outline" size="sm" render={<Link href="/dashboard" />}>
                 Go to Dashboard
               </Button>
-              <UserButton afterSignOutUrl="/" />
+              <UserButton />
             </SignedIn>
           </div>
         </nav>

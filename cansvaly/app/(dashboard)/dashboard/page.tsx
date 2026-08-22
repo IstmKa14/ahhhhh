@@ -28,7 +28,7 @@ export default function DashboardPage() {
               <Plus size={16} />
               <span>New Board</span>
             </Button>
-            <UserButton afterSignOutUrl="/" />
+            <UserButton />
           </div>
         </div>
       </header>
