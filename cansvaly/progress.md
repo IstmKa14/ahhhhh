@@ -65,13 +65,14 @@ Last updated: 2026-08-22
 ### Auth & User Flows (Clerk)
 - [x] `@clerk/nextjs` installed & configured
 - [x] `.env.local` — Created with Clerk API key placeholders
-- [x] `proxy.ts` — Next.js 16 `proxy` file convention with `clerkMiddleware()` protecting `/(dashboard)` and `/board/` routes with Clerk proxy matcher
+- [x] `proxy.ts` — Next.js 16 `proxy` file convention with `clerkMiddleware()` protecting non-public routes and redirecting unauthenticated users to `/`
 - [x] `app/layout.tsx` — Wrapped in `<ClerkProvider>` inside `<body>`
 - [x] `app/page.tsx` — Header updated with `<SignedIn>`, `<SignedOut>`, `<SignInButton>`, `<SignUpButton>`, and `<UserButton>`
 - [x] `app/(dashboard)/dashboard/page.tsx` — Protected workspace dashboard route with `<UserButton />` and board grid empty state
 - [x] `app/(auth)/sign-in/[[...sign-in]]/page.tsx` — Minimal sign in UI with Google SSO, email/password custom auth logic, loading spinner states (`fetchStatus`), and structured error banners
 - [x] `app/(auth)/sign-up/[[...sign-up]]/page.tsx` — Minimal sign up UI with Google SSO, registration, 6-digit email OTP verification step, loading spinner states (`fetchStatus`), and structured error banners
 - [x] Added `clerk/skills` suite (20 specialized skills) to `.agents/skills/`
+- [x] Added `liveblocks/skills` suite (`liveblocks-best-practices`, `yjs-best-practices`) to `.agents/skills/`
 
 ---
 
@@ -84,23 +85,34 @@ Nothing currently in progress.
 ## 📋 Pending — Ordered by Priority
 
 ### Database (Drizzle + Neon)
-- [ ] Install `drizzle-orm`, `@neondatabase/serverless`, `drizzle-kit`
-- [ ] Add `DATABASE_URL` to `.env.local`
-- [ ] `db/index.ts` — Neon serverless client
-- [ ] `db/schema.ts` — define `users`, `organizations`, `boards`, `board_members` tables
-- [ ] Run `drizzle-kit push` to sync schema
+- [x] Install `drizzle-orm`, `@neondatabase/serverless`, `drizzle-kit`
+- [x] `db/index.ts` — Neon serverless HTTP client configured
+- [x] `db/schema.ts` — defined `users`, `organizations`, `boards`, `board_members` tables
+- [x] `drizzle.config.ts` — configured Drizzle Kit for Neon migrations
+- [x] Executed `drizzle-kit push` to sync schema (`users`, `organizations`, `boards`, `board_members`) to Neon database
+
+### User Store & Custom Profile (Clerk Sync + Drizzle)
+- [x] `stores/userStore.ts` — Zustand store for user client state
+- [x] `app/(dashboard)/profile/actions.ts` — Server actions for syncing Clerk user ID to Neon DB and updating profile metadata
+- [x] `app/(dashboard)/profile/ProfileForm.tsx` — Custom user profile component using `@/components/ui/avatar` primitive
+- [x] `app/(dashboard)/profile/page.tsx` — Protected custom user profile page route
+- [x] `components/dashboard/CustomUserButton.tsx` — Custom user menu dropdown using shadcn primitives (`DropdownMenu`, `Avatar`)
+- [x] Configured Clerk authentication redirect environment variables (`NEXT_PUBLIC_CLERK_SIGN_IN_URL`, `NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL`, etc.)
+- [x] `app/(auth)/onboarding/page.tsx` — Minimal onboarding flow after registration (`/onboarding`)
 
 ### Dashboard
-- [ ] `app/(dashboard)/layout.tsx` — sidebar + main area layout
-- [ ] `app/(dashboard)/page.tsx` — redirect to boards or org home
-- [ ] `app/(dashboard)/boards/page.tsx` — board grid with create button
-- [ ] `components/dashboard/Sidebar.tsx` — fixed sidebar, collapsible to icon-only
-- [ ] `components/dashboard/OrgSwitcher.tsx` — Clerk org switcher
-- [ ] `components/dashboard/NewBoardButton.tsx` — create board dialog trigger
-- [ ] `components/board/BoardCard.tsx` — thumbnail + title + overflow menu
-- [ ] `components/board/BoardGrid.tsx` — responsive grid layout
-- [ ] `components/shared/EmptyState.tsx` — reusable empty state component
-- [ ] `components/shared/Logo.tsx` — Canvasly SVG wordmark
+- [x] `app/(dashboard)/layout.tsx` — sidebar + main area shell layout
+- [x] `app/(dashboard)/page.tsx` — interactive board grid with filter tabs
+- [x] `app/(dashboard)/boards/page.tsx` — redirect route to main dashboard
+- [x] `components/dashboard/Sidebar.tsx` — fixed desktop sidebar (collapsible) + mobile sheet drawer
+- [x] `components/dashboard/DashboardHeader.tsx` — top header with search input, workspace badge, CTA, user button
+- [x] `components/dashboard/NewBoardButton.tsx` — create board button primitive
+- [x] `components/board/BoardCard.tsx` — 16:9 thumbnail preview + title + favorite toggle + overflow actions
+- [x] `components/board/BoardCardSkeleton.tsx` — loading skeleton for board cards
+- [x] `components/board/BoardGrid.tsx` — responsive grid layout with filter tabs
+- [x] `components/shared/EmptyState.tsx` — reusable empty state component with Lucide icons
+- [x] `stores/sidebarStore.ts` — Zustand store for sidebar collapse state
+- [x] `lib/constants.ts` — layout dimension constants (`TOPBAR_HEIGHT`, `SIDEBAR_WIDTH`)
 
 ### Board Canvas (tldraw + Liveblocks)
 - [ ] Install `tldraw`, `@tldraw/sync`, `liveblocks`
@@ -163,6 +175,7 @@ See `error-memory.md` for detailed bug history.
 | 2 | Deprecated `middleware.ts` Next.js 16 warning — migrated to `proxy.ts` | ✅ Fixed |
 | 3 | Missing `dequal` dependency in `@clerk/shared` package | ✅ Fixed |
 | 4 | Deprecated `afterSignOutUrl` prop in `<UserButton />` | ✅ Fixed |
+| 5 | Invalid Server Action origin mismatch on Codespaces proxy | ✅ Fixed |
 
 ---
 

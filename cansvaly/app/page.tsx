@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { Users, Zap, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/shared/Logo";
+import { CustomUserButton } from "@/components/dashboard/CustomUserButton";
 
 // ─── Feature data ────────────────────────────────────────────────────────────
 
@@ -29,7 +30,9 @@ const features = [
 
 // ─── Page ────────────────────────────────────────────────────────────────────
 
-export default function HomePage() {
+export default async function HomePage() {
+  const { userId } = await auth();
+
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       {/* ── Navbar ──────────────────────────────────────────────────── */}
@@ -38,24 +41,23 @@ export default function HomePage() {
           <Logo />
 
           <div className="flex items-center gap-3">
-            <SignedOut>
-              <SignInButton mode="modal">
-                <Button variant="ghost" size="sm">
+            {!userId ? (
+              <>
+                <Button variant="ghost" size="sm" render={<Link href="/sign-in" />}>
                   Sign in
                 </Button>
-              </SignInButton>
-              <SignUpButton mode="modal">
-                <Button size="sm">
+                <Button size="sm" render={<Link href="/sign-up" />}>
                   Get started free
                 </Button>
-              </SignUpButton>
-            </SignedOut>
-            <SignedIn>
-              <Button variant="outline" size="sm" render={<Link href="/dashboard" />}>
-                Go to Dashboard
-              </Button>
-              <UserButton />
-            </SignedIn>
+              </>
+            ) : (
+              <>
+                <Button variant="outline" size="sm" render={<Link href="/dashboard" />}>
+                  Go to Dashboard
+                </Button>
+                <CustomUserButton />
+              </>
+            )}
           </div>
         </nav>
       </header>
