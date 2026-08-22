@@ -62,9 +62,16 @@ Last updated: 2026-08-22
 
 ---
 
-### Auth UI Pages
-- [x] `app/(auth)/sign-in/[[...sign-in]]/page.tsx` — Split-screen login UI (Google OAuth button, Email/Password inputs, feature highlights, responsive layout)
-- [x] `app/(auth)/sign-up/[[...sign-up]]/page.tsx` — Split-screen signup UI (Google OAuth button, Name & Email/Password inputs, social proof highlights, responsive layout)
+### Auth & User Flows (Clerk)
+- [x] `@clerk/nextjs` installed & configured
+- [x] `.env.local` — Created with Clerk API key placeholders
+- [x] `proxy.ts` — Next.js 16 `proxy` file convention with `clerkMiddleware()` protecting `/(dashboard)` and `/board/` routes with Clerk proxy matcher
+- [x] `app/layout.tsx` — Wrapped in `<ClerkProvider>` inside `<body>`
+- [x] `app/page.tsx` — Header updated with `<SignedIn>`, `<SignedOut>`, `<SignInButton>`, `<SignUpButton>`, and `<UserButton>`
+- [x] `app/(dashboard)/dashboard/page.tsx` — Protected workspace dashboard route with `<UserButton />` and board grid empty state
+- [x] `app/(auth)/sign-in/[[...sign-in]]/page.tsx` — Minimal sign in UI with Google SSO, email/password custom auth logic, loading spinner states (`fetchStatus`), and structured error banners
+- [x] `app/(auth)/sign-up/[[...sign-up]]/page.tsx` — Minimal sign up UI with Google SSO, registration, 6-digit email OTP verification step, loading spinner states (`fetchStatus`), and structured error banners
+- [x] Added `clerk/skills` suite (20 specialized skills) to `.agents/skills/`
 
 ---
 
@@ -75,16 +82,6 @@ Nothing currently in progress.
 ---
 
 ## 📋 Pending — Ordered by Priority
-
-### Auth (Clerk)
-- [x] Installed `@clerk/nextjs`
-- [x] `.env.local` — Created with Clerk API key placeholders
-- [x] `proxy.ts` — Updated to Next.js 16 `proxy` file convention with `clerkMiddleware()` protecting `/(dashboard)` and `/board/` routes and Clerk proxy matcher
-- [x] `app/layout.tsx` — Wrapped in `<ClerkProvider>` inside `<body>`
-- [x] `app/(dashboard)/dashboard/page.tsx` — Protected workspace dashboard route with `<UserButton />` and board grid empty state
-- [x] `app/page.tsx` — Header updated with `<SignedIn>`, `<SignedOut>`, `<SignInButton>`, `<SignUpButton>`, and `<UserButton>`
-- [x] `app/(auth)/sign-in/[[...sign-in]]/page.tsx` — Minimal sign in UI page
-- [x] `app/(auth)/sign-up/[[...sign-up]]/page.tsx` — Minimal sign up UI page
 
 ### Database (Drizzle + Neon)
 - [ ] Install `drizzle-orm`, `@neondatabase/serverless`, `drizzle-kit`
@@ -163,6 +160,9 @@ See `error-memory.md` for detailed bug history.
 | # | Symptom | Status |
 |---|---------|--------|
 | 1 | `/design-system` parse error line 240 — duplicate JSX left after edit | ✅ Fixed |
+| 2 | Deprecated `middleware.ts` Next.js 16 warning — migrated to `proxy.ts` | ✅ Fixed |
+| 3 | Missing `dequal` dependency in `@clerk/shared` package | ✅ Fixed |
+| 4 | Deprecated `afterSignOutUrl` prop in `<UserButton />` | ✅ Fixed |
 
 ---
 
@@ -172,6 +172,8 @@ See `error-memory.md` for detailed bug history.
 |---------|---------|---------|
 | `next` | 16.3.2 | Framework |
 | `react` | 19.2.8 | UI runtime |
+| `@clerk/nextjs` | ^7.8.0 | Authentication & session management |
+| `dequal` | ^2.0.3 | Deep equality checker for Clerk shared utils |
 | `tailwindcss` | ^4 | Styling |
 | `@tailwindcss/postcss` | ^4 | Tailwind PostCSS plugin |
 | `shadcn` (CLI) | 4.19.0 | Component installer |
