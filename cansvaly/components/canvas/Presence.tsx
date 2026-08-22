@@ -18,14 +18,18 @@ export function Presence() {
       <div className="flex items-center -space-x-2 overflow-hidden">
         {self && (
           <Tooltip key="self">
-            <TooltipTrigger>
-              <Avatar className="h-8 w-8 ring-2 ring-primary">
-                <AvatarImage src={self.info?.avatar || ''} alt={self.info?.name || 'You'} />
-                <AvatarFallback className="bg-primary text-xs font-semibold text-primary-foreground">
-                  {(self.info?.name || 'You').substring(0, 2).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-            </TooltipTrigger>
+            <TooltipTrigger
+              render={
+                <div className="cursor-pointer">
+                  <Avatar className="h-8 w-8 ring-2 ring-primary">
+                    <AvatarImage src={self.info?.avatar || ''} alt={self.info?.name || 'You'} />
+                    <AvatarFallback className="bg-primary text-xs font-semibold text-primary-foreground">
+                      {(self.info?.name || 'You').substring(0, 2).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
+              }
+            />
             <TooltipContent side="bottom">
               <p className="text-xs">{self.info?.name || 'You'} (You)</p>
             </TooltipContent>
@@ -39,14 +43,18 @@ export function Presence() {
 
           return (
             <Tooltip key={connectionId}>
-              <TooltipTrigger>
-                <Avatar className="h-8 w-8 ring-2" style={{ borderColor: color }}>
-                  <AvatarImage src={avatar} alt={name} />
-                  <AvatarFallback className="bg-muted text-xs font-semibold text-muted-foreground">
-                    {name.substring(0, 2).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-              </TooltipTrigger>
+              <TooltipTrigger
+                render={
+                  <div className="cursor-pointer">
+                    <Avatar className="h-8 w-8 ring-2" style={{ borderColor: color }}>
+                      <AvatarImage src={avatar} alt={name} />
+                      <AvatarFallback className="bg-muted text-xs font-semibold text-muted-foreground">
+                        {name.substring(0, 2).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
+                }
+              />
               <TooltipContent side="bottom">
                 <p className="text-xs">{name}</p>
               </TooltipContent>

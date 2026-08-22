@@ -1,9 +1,14 @@
 'use client';
 
 import React from 'react';
+import type { Editor } from 'tldraw';
 import { useOthers } from '@/lib/liveblocks';
 
-export function Cursors() {
+interface CursorsProps {
+  editor?: Editor | null;
+}
+
+export function Cursors({ editor }: CursorsProps) {
   const others = useOthers();
 
   return (
@@ -14,6 +19,8 @@ export function Cursors() {
         }
 
         const { x, y } = presence.cursor;
+        const screenPoint = editor ? editor.pageToScreen({ x, y }) : { x, y };
+
         const color = info?.color || presence.user?.color || '#5b4eff';
         const name = info?.name || presence.user?.name || 'Collaborator';
         const firstName = name.split(' ')[0].slice(0, 12);
@@ -23,7 +30,7 @@ export function Cursors() {
             key={connectionId}
             className="absolute left-0 top-0 transition-transform duration-75 ease-out"
             style={{
-              transform: `translate3d(${x}px, ${y}px, 0)`,
+              transform: `translate3d(${screenPoint.x}px, ${screenPoint.y}px, 0)`,
             }}
           >
             <svg

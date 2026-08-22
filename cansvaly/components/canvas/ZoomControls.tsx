@@ -22,16 +22,18 @@ export function ZoomControls({
     <TooltipProvider>
       <div className="absolute bottom-4 right-4 z-40 flex items-center gap-1 rounded-xl border border-border bg-card p-1 shadow-md">
         <Tooltip>
-          <TooltipTrigger>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-muted-foreground hover:text-foreground"
-              onClick={onZoomOut}
-            >
-              <ZoomOut className="h-4 w-4" />
-            </Button>
-          </TooltipTrigger>
+          <TooltipTrigger
+            render={
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                onClick={onZoomOut}
+              >
+                <ZoomOut className="h-4 w-4" />
+              </Button>
+            }
+          />
           <TooltipContent side="top">Zoom Out</TooltipContent>
         </Tooltip>
 
@@ -40,32 +42,36 @@ export function ZoomControls({
         </span>
 
         <Tooltip>
-          <TooltipTrigger>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-muted-foreground hover:text-foreground"
-              onClick={onZoomIn}
-            >
-              <ZoomIn className="h-4 w-4" />
-            </Button>
-          </TooltipTrigger>
+          <TooltipTrigger
+            render={
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                onClick={onZoomIn}
+              >
+                <ZoomIn className="h-4 w-4" />
+              </Button>
+            }
+          />
           <TooltipContent side="top">Zoom In</TooltipContent>
         </Tooltip>
 
         <div className="h-4 w-px bg-border mx-1" />
 
         <Tooltip>
-          <TooltipTrigger>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-muted-foreground hover:text-foreground"
-              onClick={onResetZoom}
-            >
-              <Maximize2 className="h-4 w-4" />
-            </Button>
-          </TooltipTrigger>
+          <TooltipTrigger
+            render={
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                onClick={onResetZoom}
+              >
+                <Maximize2 className="h-4 w-4" />
+              </Button>
+            }
+          />
           <TooltipContent side="top">Fit to View</TooltipContent>
         </Tooltip>
       </div>

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Tldraw, Editor } from 'tldraw';
 import { usePresence } from '@/hooks/usePresence';
+import { useToolbarStore } from '@/stores/toolbarStore';
 import { BoardHeader } from '@/components/canvas/BoardHeader';
 import { Toolbar } from '@/components/canvas/Toolbar';
 import { Cursors } from '@/components/canvas/Cursors';
@@ -17,11 +18,17 @@ interface CanvasInnerProps {
 
 export function CanvasInner({ boardId, boardTitle }: CanvasInnerProps) {
   const { updateCursor } = usePresence();
-  const [editor, setEditor] = useState<Editor | null>(null);
+  const { setEditor } = useToolbarStore();
+  const [editorInstance, setEditorInstance] = useState<Editor | null>(null);
   const [zoom, setZoom] = useState(100);
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    updateCursor({ x: e.clientX, y: e.clientY });
+    if (editorInstance) {
+      const pagePoint = editorInstance.screenToPage({ x: e.clientX, y: e.clientY });
+      updateCursor({ x: pagePoint.x, y: pagePoint.y });
+    } else {
+      updateCursor({ x: e.clientX, y: e.clientY });
+    }
   };
 
   const handlePointerLeave = () => {
@@ -29,7 +36,9 @@ export function CanvasInner({ boardId, boardTitle }: CanvasInnerProps) {
   };
 
   const handleMount = (mountedEditor: Editor) => {
+    setEditorInstance(mountedEditor);
     setEditor(mountedEditor);
+
     mountedEditor.on('change', () => {
       const currentZoom = mountedEditor.getZoomLevel() * 100;
       setZoom(currentZoom);
@@ -46,15 +55,15 @@ export function CanvasInner({ boardId, boardTitle }: CanvasInnerProps) {
 
       <Toolbar />
 
-      <Cursors />
+      <Cursors editor={editorInstance} />
 
       <CanvasComments boardId={boardId} />
 
       <ZoomControls
         zoom={zoom}
-        onZoomIn={() => editor?.zoomIn()}
-        onZoomOut={() => editor?.zoomOut()}
-        onResetZoom={() => editor?.resetZoom()}
+        onZoomIn={() => editorInstance?.zoomIn()}
+        onZoomOut={() => editorInstance?.zoomOut()}
+        onResetZoom={() => editorInstance?.resetZoom()}
       />
 
       <div className="absolute inset-0 z-0">

@@ -39,14 +39,7 @@ const TOOLS: ToolItem[] = [
 ];
 
 export function Toolbar() {
-  const { activeTool, setActiveTool, isCommentsPanelOpen, setCommentsPanelOpen } = useToolbarStore();
-
-  const handleToolClick = (toolId: CanvasTool) => {
-    setActiveTool(toolId);
-    if (toolId === 'comment') {
-      setCommentsPanelOpen(true);
-    }
-  };
+  const { activeTool, setActiveTool, isCommentsPanelOpen } = useToolbarStore();
 
   return (
     <TooltipProvider>
@@ -57,21 +50,23 @@ export function Toolbar() {
 
           return (
             <Tooltip key={tool.id}>
-              <TooltipTrigger>
-                <Button
-                  variant={isActive ? 'secondary' : 'ghost'}
-                  size="icon"
-                  className={cn(
-                    'h-10 w-10 rounded-lg transition-colors',
-                    isActive
-                      ? 'bg-primary text-primary-foreground hover:bg-primary/90'
-                      : 'text-muted-foreground hover:bg-accent hover:text-foreground'
-                  )}
-                  onClick={() => handleToolClick(tool.id)}
-                >
-                  <Icon className="h-5 w-5" />
-                </Button>
-              </TooltipTrigger>
+              <TooltipTrigger
+                render={
+                  <Button
+                    variant={isActive ? 'secondary' : 'ghost'}
+                    size="icon"
+                    className={cn(
+                      'h-10 w-10 rounded-lg transition-colors',
+                      isActive
+                        ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+                        : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                    )}
+                    onClick={() => setActiveTool(tool.id)}
+                  >
+                    <Icon className="h-5 w-5" />
+                  </Button>
+                }
+              />
               <TooltipContent side="right" className="flex items-center gap-2">
                 <span>{tool.label}</span>
                 <kbd className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-mono font-medium text-muted-foreground">
